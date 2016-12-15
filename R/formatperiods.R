@@ -5,12 +5,13 @@
 #' @param baseline vector, Bounding years for the baseline period, should be equal in length to the future period
 #' @param future vector, Bounding years for the future period
 #'
+#' @return list List of projections for baseline and future periods
 #' @export
 #'
 #'
 
 
-formatperiods=function(modelname,baseline,future){
+formatperiods=function(data,modelname,baseline,future){
   data=data[,c("Date",modelname)]
   names(data)=c("Date","Model")
   basedata=data[(data$Date>=(paste0(baseline[1],'-01-01'))& data$Date<=(paste0(baseline[2],'-12-31'))),]
