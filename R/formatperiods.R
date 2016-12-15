@@ -2,19 +2,18 @@
 #'
 #' @param data data.frame with formatted time series of projections for various models
 #' @param modelname Model and RCP
-#' @param baseline vector, Bounding years for the baseline period, should be equal in length to the future period
-#' @param future vector, Bounding years for the future period
+#' @param period vector, Bounding years for the baseline or future period
 #'
-#' @return list List of projections for baseline and future periods
+#' @return data.frame Data frame of projections for the specified period
 #' @export
 #'
 #'
 
 
-formatperiods=function(data,modelname,baseline,future){
+formatperiods=function(data,modelname,period){
   data=data[,c("Date",modelname)]
   names(data)=c("Date","Model")
-  basedata=data[(data$Date>=(paste0(baseline[1],'-01-01'))& data$Date<=(paste0(baseline[2],'-12-31'))),]
-  futuredata=data[(data$Date>=(paste0(future[1],'-01-01'))& data$Date<=(paste0(future[2],'-12-31'))),]
-  return(c(basedata,futuredata))
+  perioddata=data[(data$Date>=(paste0(period[1],'-01-01'))& data$Date<=(paste0(period[2],'-12-31'))),]
+
+  return(perioddata)
 }

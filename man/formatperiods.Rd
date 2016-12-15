@@ -4,19 +4,17 @@
 \alias{formatperiods}
 \title{Formats baseline and historic projections for a chosen model}
 \usage{
-formatperiods(data, modelname, baseline, future)
+formatperiods(data, modelname, period)
 }
 \arguments{
 \item{data}{data.frame with formatted time series of projections for various models}
 
 \item{modelname}{Model and RCP}
 
-\item{baseline}{vector, Bounding years for the baseline period, should be equal in length to the future period}
-
-\item{future}{vector, Bounding years for the future period}
+\item{period}{vector, Bounding years for the baseline or future period}
 }
 \value{
-list List of projections for baseline and future periods
+data.frame Data frame of projections for the specified period
 }
 \description{
 Formats baseline and historic projections for a chosen model
