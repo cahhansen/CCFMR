@@ -1,11 +1,12 @@
 Package: CCFMR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Applies a Combined Change Factor Methodology to Precipitation Projections
 Version: 0.1
 Date: 2016-12-15
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Author: Carly Hansen
+Maintainer: Who to complain to <carly.hansen@utah.edu>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 LazyData: TRUE
 RoxygenNote: 5.0.0
+Imports: lubridate
