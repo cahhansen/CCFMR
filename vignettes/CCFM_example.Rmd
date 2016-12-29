@@ -1,0 +1,88 @@
+---
+title: "CCFM_Example"
+author: "Carly Hansen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CCFM_Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Read in data and format by subsetting a specificed model into future and baseline periods.
+
+
+```{r, echo=FALSE}
+#Read in data
+library(CCFMR)
+slcbcca=slc_bcca
+```
+
+```{r}
+#Limit data to specified time period for a specified model
+base=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",c(1960,1989))
+future=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",c(2010,2039))
+obs=formatperiods(slc_obs,"ObservedPrecip",c(1960,1989))
+
+#Find average precipitation volume for each day of the year
+futureavg=avgdaily(future)
+baseavg=avgdaily(base)
+```
+
+Calculate the additive and multiplicative change factors using the average daily values.
+```{r}
+#Calculate additive and multiplicative change factors
+add=addcf(baseavg,futureavg)
+mult=multcf(baseavg,futureavg)
+```
+
+Apply the change factors to the historical observations from the same time period as the baseline period.
+```{r}
+#Calculate the day of the year for observed data
+obs$DOY=yday(obs$Date)
+
+#Add corresponding cf to observed dataset
+scaledadd=merge(add,obs,by="DOY")
+scaledadd$Scaled=scaledadd$Model+scaledadd$cf
+scaledadd=scaledadd[order(scaledadd$Date),]
+
+#Multiply observed dataset by multiplicative cf 
+scaledmult=merge(mult,obs,by="DOY")
+scaledmult$Scaled=scaledmult$Model*scaledmult$cf
+scaledmult=scaledmult[order(scaledmult$Date),]
+```
+
+
+
+
+#
+```
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
