@@ -12,7 +12,7 @@
 
 formatperiods=function(data,modelname,period){
   data=data[,c("Date",modelname)]
-  names(data)=c("Date","Model")
+  names(data)=c("Date","Precip")
   perioddata=data[(data$Date>=(paste0(period[1],'-01-01'))& data$Date<=(paste0(period[2],'-12-31'))),]
 
   return(perioddata)
