@@ -11,7 +11,7 @@ avgdaily=function(data){
   library(lubridate)
   data$DOY=as.factor(yday(data$Date))
   avgdata=tapply(data$Precip,data$DOY,mean)
-  avgdata=data.frame("DOY"=c(seq(1,366)),"Avg"=avgdata)
+  avgdata=data.frame("DOY"=c(seq(1,366)),"Precip"=avgdata)
   return(avgdata)
 }
 
