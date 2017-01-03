@@ -12,9 +12,9 @@
 
 <meta name="author" content="Carly Hansen" />
 
-<meta name="date" content="2016-12-28" />
+<meta name="date" content="2017-01-02" />
 
-<title>CCFM_Example</title>
+<title>CCFM Example</title>
 
 
 
@@ -68,219 +68,167 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">CCFM_Example</h1>
+<h1 class="title toc-ignore">CCFM Example</h1>
 <h4 class="author"><em>Carly Hansen</em></h4>
-<h4 class="date"><em>2016-12-28</em></h4>
+<h4 class="date"><em>2017-01-02</em></h4>
 
 
 
-<p>Read in data and format by subsetting a specificed model into future and baseline periods.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Read in data</span>
-<span class="kw">library</span>(CCFMR)
-slcbcca=slc_bcca
-
-<span class="co">#Format data into future and baseline periods</span>
-base26=<span class="kw">formatperiods</span>(slcbcca,<span class="st">&quot;gfdl-esm2g.1.rcp26&quot;</span>,<span class="kw">c</span>(<span class="dv">1960</span>,<span class="dv">1990</span>))
-future26=<span class="kw">formatperiods</span>(slcbcca,<span class="st">&quot;gfdl-esm2g.1.rcp26&quot;</span>,<span class="kw">c</span>(<span class="dv">2010</span>,<span class="dv">2039</span>))
-
-<span class="co">#Find average daily (day of year) precipitation volume</span>
-future26avg=<span class="kw">avgdaily</span>(future26)</code></pre></div>
+<div id="traditional-change-factor-methodology-single-and-multiple-cf" class="section level1">
+<h1>Traditional Change Factor Methodology (single and multiple CF)</h1>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Load necessary libraries, and read in data and format by subsetting a specificed model into future and baseline periods. (Note that periods for the baseline and the observed dataset should be the same).</p>
 <pre><code>## 
 ## Attaching package: 'lubridate'</code></pre>
 <pre><code>## The following object is masked from 'package:base':
 ## 
 ##     date</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">base26avg=<span class="kw">avgdaily</span>(base26)</code></pre></div>
+</div>
+<div id="single-change-factor-approach" class="section level2">
+<h2>Single Change Factor Approach</h2>
 <p>Calculate the additive and multiplicative change factors using the average daily values.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Calculate additive and multiplicative change factors</span>
-add26=<span class="kw">addcf</span>(base26avg,future26avg)
-mult26=<span class="kw">multcf</span>(base26avg,future26avg)</code></pre></div>
-<div id="section" class="section level1">
-<h1></h1>
-<p>``` ## Figures</p>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>:<span class="dv">10</span>)
-<span class="kw">plot</span>(<span class="dv">10</span>:<span class="dv">1</span>)</code></pre></div>
-<p><img src="data:image/png;base64,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" alt /><img src="data:image/png;base64,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" alt /></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = &quot;Your figure caption.&quot;</code> in <strong>knitr</strong>.</p>
-<div id="more-examples" class="section level2">
-<h2>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math inline">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and tables, e.g. using <code>knitr::kable()</code>.</p>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td align="left">Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-</tbody>
-</table>
-<p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Find average precipitation volume for each day of the year</span>
+futureavg=<span class="kw">avgdaily</span>(future)
+baseavg=<span class="kw">avgdaily</span>(base)
+<span class="co">#Calculate additive and multiplicative change factors</span>
+add=<span class="kw">calccf</span>(baseavg,futureavg,<span class="dt">cftype=</span><span class="st">&quot;additive&quot;</span>)
+mult=<span class="kw">calccf</span>(baseavg,futureavg,<span class="dt">cftype=</span><span class="st">&quot;multiplicative&quot;</span>)</code></pre></div>
+<p>Apply the change factors to the historical observations from the same time period as the baseline period.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Calculate the day of the year for observed data</span>
+obs$DOY=<span class="kw">yday</span>(obs$Date)
+
+<span class="co">#Apply corresponding cf to observed dataset</span>
+scaledadd=<span class="kw">scalesingle</span>(add,obs,<span class="dt">cftype=</span><span class="st">&quot;additive&quot;</span>)
+scaledmult=<span class="kw">scalesingle</span>(mult,obs,<span class="dt">cftype=</span><span class="st">&quot;multiplicative&quot;</span>)</code></pre></div>
 </div>
 </div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>A footnote here.<a href="#fnref1">↩</a></p></li>
-</ol>
+<div id="multiple-100-change-factor-approach" class="section level1">
+<h1>Multiple (100) Change Factor Approach</h1>
+<p>Calculate the change factor for each percentile</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Calculate the percentiles (ECDF) of modeled values</span>
+base=<span class="kw">calcecdf</span>(base,<span class="st">&quot;Precip&quot;</span>)
+future=<span class="kw">calcecdf</span>(future,<span class="st">&quot;Precip&quot;</span>)
+
+<span class="co">#Calculate the percentiles (ECDF) of the observed values</span>
+obs$percentile=(<span class="kw">rank</span>(obs$Precip)/<span class="kw">length</span>(obs$Precip))*<span class="dv">100</span>
+obs$percentlow=<span class="kw">floor</span>(obs$percentile)
+
+<span class="co">#Visualize Results by plotting precip against the percentiles</span>
+<span class="kw">plot</span>(<span class="dt">x=</span>base$Precip,<span class="dt">y=</span>base$percentile,<span class="dt">ylab=</span><span class="st">'Percentile'</span>,<span class="dt">xlab=</span><span class="st">'Precipitation (mm/day)'</span>,<span class="dt">main=</span><span class="st">'ECDF'</span>,<span class="dt">col=</span><span class="dv">2</span>)
+<span class="kw">points</span>(<span class="dt">x=</span>future$Precip,<span class="dt">y=</span>future$percentile,<span class="dt">col=</span><span class="dv">4</span>)
+<span class="kw">points</span>(<span class="dt">x=</span>obs$Precip,<span class="dt">y=</span>obs$percentile,<span class="dt">col=</span><span class="dv">3</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">percent=<span class="kw">data.frame</span>(<span class="dt">percentlow=</span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">100</span>))
+
+for (i in <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">99</span>)){
+  percent$base[i<span class="dv">+1</span>]=<span class="kw">mean</span>(base[(base$percentlow==i),<span class="st">&quot;Precip&quot;</span>])
+  percent$future[i<span class="dv">+1</span>]=<span class="kw">mean</span>(future[(future$percentlow==i),<span class="st">&quot;Precip&quot;</span>])
+}
+percent$base[<span class="kw">is.nan</span>(percent$base)]=<span class="dv">0</span>
+percent$future[<span class="kw">is.nan</span>(percent$future)]=<span class="dv">0</span>
+
+percent$addcf=percent$future-percent$base
+percent$multcf=percent$future/percent$base
+percent$multcf[<span class="kw">is.nan</span>(percent$multcf)]=<span class="dv">0</span></code></pre></div>
+<p>Apply multiple change factors</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Create and Format the mcfm (multiple change factor methodology) dataframe</span>
+scaledmcfm=obs
+scaledmcfm=<span class="kw">merge</span>(scaledmcfm,percent,<span class="dt">by=</span><span class="st">&quot;percentlow&quot;</span>)
+
+<span class="co">#Apply multiple change factors (additive and multiplicative only)</span>
+scaledmcfm$addscaled=scaledmcfm$Precip+scaledmcfm$addcf
+scaledmcfm[(scaledmcfm$addscaled&lt;<span class="dv">0</span>),<span class="st">&quot;addscaled&quot;</span>]=<span class="dv">0</span>
+scaledmcfm$multscaled=scaledmcfm$Precip*scaledmcfm$multcf</code></pre></div>
+</div>
+<div id="combined-change-factor-methodology" class="section level1">
+<h1>Combined Change Factor Methodology</h1>
+<p>Create Difference and Ratio Plots: Following the suggestion of Anandhi, et al., use ratios and difference plots to determine which type of change factor might be the most appropriate (if there is a curve, large slope, or large variation over a range in one CF type, use the other type. If there is no difference, use default of the multiplicative).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Calculate ratio and differences for each bin</span>
+diff=percent$future-percent$base
+ratio=percent$future/percent$base
+
+<span class="kw">plot</span>(<span class="dt">x=</span>diff,<span class="dt">y=</span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">100</span>),<span class="dt">xlab=</span><span class="st">'Difference of Future-Baseline'</span>,<span class="dt">ylab=</span><span class="st">'Percentile'</span>)
+<span class="kw">plot</span>(<span class="dt">x=</span>ratio,<span class="dt">y=</span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">100</span>),<span class="dt">xlab=</span><span class="st">'Ratio of Future/Baseline'</span>,<span class="dt">ylab=</span><span class="st">'Percentile'</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAAY1BMVEUAAAAAADoAAGYAOjoAOpAAZrY6AAA6ADo6AGY6Ojo6OpA6kNtmAABmADpmkJBmtrZmtv+QOgCQOjqQkGaQ2/+2ZgC225C2/7a2///bkDrb/7bb////tmb/25D//7b//9v///9YPFjaAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAMhElEQVR4nO2di3riyBGFz0zGzmbtzeLEJEOMsd7/KZe+twD1TSWf8oT/sz2A6nKoaXW3RCNhulMEbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHaAVuAdsAWoB2wBWgHbAHagXC4LwOrQLLhNsDXBs32wullw63mqqkg+22LIKZli3DrcNXB7KXwF1MjzYY1KZ279qaEyuCqsSD8xdRIsyEl3BiYXHXSz2zT/32BXEO2v9e1QPbbFk1I1TbhulKH/Rv2d7aXXZtdvFoIu1rYluF6MsPXAuEvphujWDRvjrtK1dbhOhIj9cnwQkpjxvKWUUNKuFq2WAHX44RhvWE4rW3vN6SEqydDmGNMs+6lqqNq0G1ICdeQK5QGofcp71pz5+YsYgiHa8hl/s5mqW2z1RabPkNKuIZc8D9ZfVoq1GDSaUgJV08W5oOz+tx3sZDND15ZvzzrjEquzTm6FH28uP+g7z9Fwslgp0CxATUeadUteg0NBzy5B8fwYFU4KdxOhSlMhWi72MdLLMvhx9vqcFK4fSzsbsw+6PS8Cw+PCztZTzghEH98/7PZKHZ6xo+3/cK+Y9DZghAbTuihW0S02FwYHr+9nt/26blQoQN8E9LUB2VnM9FyFOa9msOHB6Z5mHZxWByhJtvILAvth1Sg7FCjOX+/oelgTIGWehfhvGIga0Nb9L3RMLSg/WLrKEXJNH4yyMaujvTNlsnQ9UGxm7nJHniwk8Ulo+a8K0m1QDgQ27xAroP59lowti0MD8aU2Um7QoRUqTw96Zst20P6Yf5oS8gc5vODr2xwbzvESEGkDSc/UXSdOHGiiPlP7H+mjjHsl25BSD+YfHuyD7pGiGZbZxjmN8Uj9awPyubUg3nHwRSqkg7d+8fPZvO+uCpGMZMj26/6+p48iKwhJdxCEt8rpyPT/rTNHv2hPzNcLVN2jDri3m54ntfEbuiLHGpg8t30WIma7XsDf264UiakfW3gIKfZPBqe/nBz6C9zsBr7H8Ra9Xh3G4YCFU93yOUVIFYGvhl1OXca7tM8qHDCTDDvemLD8cXpmkivaEHraM67PlOYBmVdUY+7uCElXCFR3jWj91h+qEDVDwVF864ldj3Zky7/fsP9qsr05l2VJPU6cR79CaNY6eMM+bxrcsSZ4eg0ehorUOlcq3jedSnyY9XxKH2GHy8Po8mS4LH/zc5UWbbxdM2eyfBYPF0vnXc8Q+ydP7lAX+Vg1e9aAwPXPIy4ISXcjQSzzmc8XbPneIrPCHcrQdb9rMjW7JoZVld3SOYdThD2sNHxPcTpN2xY3SGYdzjB6gHex+k2bFrdIZd3NH4sz8om1OwaDb/G6g6kI9N1FWr2jIarVnf0510RPz+7MZyv2TEZtqzukMs7Gh9T2s/C86FAA4b11R2CeYcTIO1i0ycXSALhcLcyhDGs/zTrLIy4oUXBSvtQnvhoMMyAoemeF5evWngr7eOAFcZ3fPrBqh++Ts/LZz1466QRQqchfmWqZu9oGE6YFeZBtJX2LmqYI8Zj+fUhewxD8yjMpGktCP5vnEGvT9McIRm6GdD7o8KV9jZq6JyzE0ErKtXsmBm+P1bnQayV9nC/SJ0Q0qvDEWUNKeF80OwEUBrj4443FrPbcHHZYVOUyHiM5eD5b5j8IB51jAftM+z42Of9cdG0OW87iH+z4y/k/4xUqdkjGdbPczSshW3OW9Q0e8O4Chx3N4SeqT9vs0M0bPlUww9eG7egi0MIXAfGlDUp36x6k4gbWk7PZvzatkCYLg5CkeKGtoWsKqoKdD4gOc8DhgvU0lmkfubaDZcZ0gv1wBdpBgzbPtU4H7DWCrRUB7QIu1GgWfCLCsVBrZNmh2TY+qnG++PfygUKv7dT1ZQV3jAWznB8zijW/qnGx8vyaVkU6rC44dJssQViWmhb/TRHiYZin2pgScDihku7pRpwCyT2qQYWBaBH2E3/VScRr7R0Gop9qhF+b2xd99+P7O9amqNkhmKfamxzSDatb4IXoWQNKeGuwouVvjmOVMJtwm0Heg0PWP4a4RZ52aDT8FA+gpDPywZ9hu5s2dKZ+C3yskGfoTtbtm6O2JeXDfoM7wWqGN4LVDFcW6BNT9pvAvoM7y2oYth4aQrBvGwgbkgJtx0QN6SE2w6IG1LCbQfEDSnhtgPihpRw2wFxQ0q47YC4ISXcdkDckBJuOyBuSAm3HRA3pITbDogbUsJtB8QNKeG2A+KGlHDbAXFDSrjtgLihRcG3fYSAuKFB6X01RoC44aT1rghjQNxwKn3b55c/J93GvQXVUHlfjTEgbmjReF+NMSBu2Bjuy0AqUFeK/g2isdpY678mRf+Ge4EqG+4Fqmy4F6iy4V6gyoZ7gSob7gWqbLgXqLLh1yzQ1wZsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdbBD3m378PXxd2n6ktXOfz0sM+KXqcef8tfv59bHTpB4KxAuZmvsfwfs3Xhe09Td7/vnzNgplHvERRyWMyxYgLBKJ/xWUACMebwkf4+wf/5ME/KXwbbebhLtBTv87KMS1TSv4CX3m7AMLxpnAFL3+ZnVSgQ2FfyT1cSzJ/Cx52eUCsRvIvugwB6YChmQf1cRfb/wNLN1CcefgCnV0KHpZUoOhfc+kHksEcqQm4p67/dNeHu30FsJmHbw7YlTycWyhQ9K+69APBWJ55gcyN79IVdG/3ERcetpOOK22We5XrAlVd+oFcqMBsh5l1L0tXGJzvlOaept//G27aWbhgxo1drObSD+RCBRa6XLft5jB8UUX70m8/Sx6WG510zaUfyIUKzAZtp/38VuKDmofjPMyXPCzHq2G+6tIP5EJF5tO+0AfZ97/Qf+Ye9qr69knJw3pdTxRrLv1AMFbEHyv4OVAYePdYvkRR7mEOF1yxSh6TL5BLcmh06QeSwX5FwBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAfC8cJl4GbrB4670o2AD9ln95h9tH5c/pT9/fc3Z1+7e/eu4xbEt8Aa5xu4tQRuVWKgLDHedvLq3nglv+ODtz8UK7SyOtNmBfL/OGoF8lu7CrTfefvybT3VFsipd2tRzH3sf/zP3bkj3/ncE7PVrfOJBbLv6vT8z+hndpQ//m3MDj7Ax79eY4FM4LDqxUSDWwRqDf0udnr+83n2ejtYXZI5eQuyq6PPe4CTuHM7nl0fZQhPrlvQKRQl+NnHZqu7y9eT7YLCLhbXYYcF+iZwMIxRzLJr/5uWlLYAqcp4fIHM5eBOZh2mkRzeqFsp51eSxSetBXoKu5NZN3V8iJ362StmCmvOomGM8mQNUoBmIFKWRBjF4uXykArkVhD6NajxSSpQ8LxdoF2orfHc70JBj/6rKz5TvnTUBc+jpADNQKIqGbYFvT/6ZoTv/3m8LJAvSHzS2oJ2rteyNTRdULDfu67JZnL/P7tkeFmgq5lEFYiVxuF2MXudRfeNnasCLbegeoHiauLf36L9wa+gje1i/+01Gt5sQV1gtBIL+D7IrJa3u/oRI33QUyxd/jj158eHZH/+J2by7qnot8rcB8bqsIgvkBl0XOPBk32TPaPYx8uPN3PHbeOXHttB2i71/fa6302pD9pNMZMt/tGPVsbwokDx9fY3BKnKTOHNufdvrqxs1+YaNfvCPOjWRNEsBP7z/PLZ780/9lZmGvP9p+2CpuxQI2Y6Zq+YedNlgcLr7WBtRX51wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdoBW4B2wBagHbAFaAdsAdr5Cx/TJoAkbi3FAAAAAElFTkSuQmCC" alt /></p>
+<div id="ccfm---single" class="section level2">
+<h2>CCFM - Single</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Format a dataframe for the combined change factor method</span>
+scaledccfms=<span class="kw">merge</span>(obs,add,<span class="dt">by=</span><span class="st">&quot;DOY&quot;</span>)
+scaledccfms=<span class="kw">merge</span>(scaledccfms,mult,<span class="dt">by=</span><span class="st">&quot;DOY&quot;</span>)
+<span class="kw">names</span>(scaledccfms)=<span class="kw">c</span>(<span class="st">&quot;DOY&quot;</span>,<span class="st">&quot;Date&quot;</span>,<span class="st">&quot;Precip&quot;</span>,<span class="st">&quot;percentile&quot;</span>,<span class="st">&quot;percentlow&quot;</span>,<span class="st">&quot;addcf&quot;</span>,<span class="st">&quot;multcf&quot;</span>)</code></pre></div>
+<p>Apply the change factor type for different ranges, using difference/ratio plots as a guide, and set a threshold for when the near-maxima values should use the additive change factor (regardless of difference/ratio plot results, which may not be very helpful near the maxima).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaledccfms=<span class="kw">ccfm</span>(scaledccfms,<span class="st">&quot;Precip&quot;</span>,<span class="st">&quot;addcf&quot;</span>,<span class="st">&quot;multcf&quot;</span>,<span class="dv">60</span>,<span class="dv">95</span>)
+
+<span class="co">#Remove extra precipitation events</span>
+scaledccfms[(scaledccfms$Precip==<span class="dv">0</span>),<span class="st">&quot;scaled&quot;</span>]=<span class="dv">0</span></code></pre></div>
+</div>
+<div id="ccfm---multiple" class="section level2">
+<h2>CCFM - Multiple</h2>
+<p>Apply the change factor type for different ranges, using difference/ratio plots as a guide, and set a threshold for when the near-maxima values should use the additive change factor (regardless of difference/ratio plot results, which may not be very helpful near the maxima).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaledccfmm=scaledmcfm
+
+<span class="co">#Apply the multiple change factors over the specified ranges</span>
+scaledccfmm=<span class="kw">ccfm</span>(scaledccfmm,<span class="st">&quot;Precip&quot;</span>,<span class="st">&quot;addcf&quot;</span>,<span class="st">&quot;multcf&quot;</span>,<span class="dv">60</span>,<span class="dv">95</span>)
+
+<span class="co">#Remove extra precipitation events</span>
+scaledccfmm[(scaledccfmm$Precip==<span class="dv">0</span>),<span class="st">&quot;scaled&quot;</span>]=<span class="dv">0</span></code></pre></div>
+</div>
+</div>
+<div id="summary-and-comparison-of-different-methods" class="section level1">
+<h1>Summary and Comparison of different methods</h1>
+<p>Calculate Summary Statistics to Compare Different Scaling Methods</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Historical Observed</span>
+<span class="kw">summary</span>(scaledccfmm$Precip)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.059   0.000  57.900</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledccfmm[(scaledccfmm$Precip&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Future Observed</span>
+comparison=<span class="kw">formatperiods</span>(slc_obs,<span class="st">&quot;ObservedPrecip&quot;</span>,<span class="kw">c</span>(<span class="dv">1980</span>,<span class="dv">2009</span>))
+<span class="kw">summary</span>(comparison$Precip)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.117   0.300  57.700</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(comparison[(comparison$Precip&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2858</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Single Additive Change Factor</span>
+<span class="kw">summary</span>(scaledadd$scaled)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0000  0.0000  0.2205  1.3010  0.9962 58.3200</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledadd[(scaledadd$scaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 6816</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Single Multiplicative Change Factor</span>
+<span class="kw">summary</span>(scaledmult$scaled)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.444   0.000 525.500</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledmult[(scaledmult$scaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Combined Single Change Factors</span>
+<span class="kw">summary</span>(scaledccfms$scaled)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.171   0.000  58.320</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledccfms[(scaledccfms$scaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Multiple Additive Change Factors</span>
+<span class="kw">summary</span>(scaledccfmm$addscaled)</code></pre></div>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##  0.00056  0.00056  0.00056  1.11500  0.00056 59.94000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledccfmm[(scaledccfmm$addscaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 10957</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Multiple Multiplicative Change Factors</span>
+<span class="kw">summary</span>(scaledccfmm$multscaled)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.135   0.000  65.590</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledccfmm[(scaledccfmm$multscaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Combined Multiple Change Factors</span>
+(<span class="kw">summary</span>(scaledccfmm$scaled))</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.111   0.000  59.940</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(scaledccfmm[(scaledccfmm$scaled&gt;<span class="dv">0</span>),])</code></pre></div>
+<pre><code>## [1] 2675</code></pre>
+<p>Plot scaled values</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaledccfmm$FutureDate=scaledccfmm$Date+(<span class="kw">round</span>(<span class="fl">365.25</span>*<span class="dv">40</span>))</code></pre></div>
 </div>
 
 
