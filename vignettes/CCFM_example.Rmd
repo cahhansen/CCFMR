@@ -139,6 +139,8 @@ scaledccfmm=scaledmm
 #Apply the multiple change factors over the specified ranges
 scaledccfmm=ccfm(scaledccfmm,"Precip","addcf","multcf",60,95)
 
+#Remove extra precipitation events
+scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 ```
 
 # Summary and Comparison of different methods

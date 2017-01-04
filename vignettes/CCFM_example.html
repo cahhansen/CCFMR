@@ -158,7 +158,10 @@ scaledccfms[(scaledccfms$Precip==<span class="dv">0</span>),<span class="st">&qu
 <pre class="sourceCode r"><code class="sourceCode r">scaledccfmm=scaledmm
 
 <span class="co">#Apply the multiple change factors over the specified ranges</span>
-scaledccfmm=<span class="kw">ccfm</span>(scaledccfmm,<span class="st">&quot;Precip&quot;</span>,<span class="st">&quot;addcf&quot;</span>,<span class="st">&quot;multcf&quot;</span>,<span class="dv">60</span>,<span class="dv">95</span>)</code></pre>
+scaledccfmm=<span class="kw">ccfm</span>(scaledccfmm,<span class="st">&quot;Precip&quot;</span>,<span class="st">&quot;addcf&quot;</span>,<span class="st">&quot;multcf&quot;</span>,<span class="dv">60</span>,<span class="dv">95</span>)
+
+<span class="co">#Remove extra precipitation events</span>
+scaledccfmm[(scaledccfmm$Precip==<span class="dv">0</span>),<span class="st">&quot;scaled&quot;</span>]=<span class="dv">0</span></code></pre>
 </div>
 </div>
 <div id="summary-and-comparison-of-different-methods" class="section level1">
@@ -211,8 +214,9 @@ comparison=<span class="kw">formatperiods</span>(slc_obs,<span class="st">&quot;
 <pre><code>## [1] 2675</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Combined Multiple Change Factors</span>
 <span class="kw">precipsummary</span>(scaledccfmm,<span class="st">&quot;scaled&quot;</span>)</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.         
-##   0.000   0.000   0.000   1.111   0.000  59.940   0.000</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   1.111   0.000  59.940 
+## [1] 2675</code></pre>
 <p>Plot scaled values</p>
 <pre class="sourceCode r"><code class="sourceCode r">scaledccfmm$FutureDate=scaledccfmm$Date+(<span class="kw">round</span>(<span class="fl">365.25</span>*<span class="dv">40</span>))</code></pre>
 </div>

@@ -9,7 +9,7 @@
 precipsummary=function(data,precipcol){
   precip=data[,precipcol]
   psum=summary(precip)
-  pevents=length(precip>0)
+  pevents=length(precip[precip>0])
   print(psum)
   print(pevents)
 }
