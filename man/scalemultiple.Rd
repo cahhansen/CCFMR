@@ -4,14 +4,14 @@
 \alias{scalemultiple}
 \title{Applies multiple change factors to observed precipitation}
 \usage{
-scalemultiple(observed, cftype, percent)
+scalemultiple(observed, cftype, percentdf)
 }
 \arguments{
 \item{observed, }{data.frame with observed time series (formatted to include day of the year)}
 
 \item{cftype, }{string indicating 'additive' or 'multiplicative'}
 
-\item{percent, }{data.frame with change factors by percentile}
+\item{percentdf, }{data.frame with change factors by percentile}
 }
 \value{
 data.frame Data frame of scaled projections

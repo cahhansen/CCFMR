@@ -7,9 +7,11 @@ library(lubridate)
 slcbcca=slc_bcca
 
 #Limit data to specified time period for a specified model
-base=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",c(1950,1979))
-future=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",c(1980,2009))
-obs=formatperiods(slc_obs,"ObservedPrecip",c(1950,1979))
+baseperiod=c(1950,1979)
+futureperiod=c(1980,2009)
+base=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",baseperiod)
+future=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",futureperiod)
+obs=formatperiods(slc_obs,"ObservedPrecip",baseperiod)
 
 ## ------------------------------------------------------------------------
 #Find average precipitation volume for each day of the year
@@ -56,8 +58,8 @@ points(x=obs$Precip,y=obs$percentile,col=3)
 
 ## ------------------------------------------------------------------------
 #Apply multiple change factors (additive and multiplicative only)
-scaledma=scalemultiple(obs,"additive",percent)
-scaledmm=scalemultiple(obs,"multiplicative",percent)
+scaledma=scalemultiple(obs,"additive",percentdf=percent)
+scaledmm=scalemultiple(obs,"multiplicative",percentdf=percent)
 
 ## ----fig.show='hold'-----------------------------------------------------
 #Calculate ratio and differences for each bin
@@ -112,16 +114,15 @@ summary(scaledccfms$scaled)
 nrow(scaledccfms[(scaledccfms$scaled>0),])
 #------------------------------------------------------------
 #Multiple Additive Change Factors
-summary(scaledma$scaled)
-nrow(scaledma[(scaledma$scaled>0),])
+summary(scaledma$addscaled)
+nrow(scaledma[(scaledma$addscaled>0),])
 
 #Multiple Multiplicative Change Factors
-summary(scaledmm$scaled)
-nrow(scaledmm[(scaledmm$scaled>0),])
+summary(scaledmm$multscaled)
+nrow(scaledmm[(scaledmm$multscaled>0),])
 
 #Combined Multiple Change Factors
-(summary(scaledccfmm$scaled))
-nrow(scaledccfmm[(scaledccfmm$scaled>0),])
+precipsummary(scaledccfmm,"scaled")
 
 
 ## ------------------------------------------------------------------------
