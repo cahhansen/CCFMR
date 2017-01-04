@@ -11,7 +11,6 @@
 #'
 #' @return data Data frame with percentiles (exact and rounded)
 #' @export
-#'
 
 
 ccfm=function(data,precipcol,addcfcol,multcfcol,upperboundadd,threshold){
@@ -23,5 +22,9 @@ ccfm=function(data,precipcol,addcfcol,multcfcol,upperboundadd,threshold){
 
   #Apply multiplicative when additive produces a negative value
   data[(data$scaled<0),"scaled"]=data[(data$scaled<0),precipcol]*data[(data$scaled<0),multcfcol]
+
+  #Remove extra precipitation events
+  data[(data$Precip==0),"scaled"]=0
+
   return(data)
 }

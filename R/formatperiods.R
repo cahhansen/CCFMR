@@ -6,8 +6,6 @@
 #'
 #' @return data.frame Data frame of projections for the specified period
 #' @export
-#'
-#'
 
 
 formatperiods=function(data,modelname,period){

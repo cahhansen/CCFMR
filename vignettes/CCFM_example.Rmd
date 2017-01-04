@@ -61,6 +61,20 @@ future=calcecdf(future,"Precip")
 #Calculate the percentiles (ECDF) of the observed values
 obs=calcecdf(obs,"Precip")
 
+#Calculate the change factors by percentile
+percent=data.frame(percentlow=seq(1,100))
+
+for (i in seq(0,99)){
+    percent$base[i+1]=mean(base[(base$percentlow==i),"Precip"])
+    percent$future[i+1]=mean(future[(future$percentlow==i),"Precip"])
+}
+percent$base[is.nan(percent$base)]=0
+percent$future[is.nan(percent$future)]=0
+
+percent$addcf=percent$future-percent$base
+percent$multcf=percent$future/percent$base
+percent$multcf[is.nan(percent$multcf)]=0
+
 #Visualize Results by plotting precip against the percentiles
 plot(x=base$Precip,y=base$percentile,ylab='Percentile',xlab='Precipitation (mm/day)',main='ECDF',col=2)
 points(x=future$Precip,y=future$percentile,col=4)
@@ -71,8 +85,8 @@ points(x=obs$Precip,y=obs$percentile,col=3)
 Apply multiple change factors
 ```{r}
 #Apply multiple change factors (additive and multiplicative only)
-scaledma=scaledmultiple(obs,"additive")
-scaledmm=scaledmultiple(obs,"multiplicative")
+scaledma=scalemultiple(obs,"additive",percent)
+scaledmm=scalemultiple(obs,"multiplicative",percent)
 ```
 
 
@@ -118,14 +132,10 @@ scaledccfms[(scaledccfms$Precip==0),"scaled"]=0
 
 Apply the change factor type for different ranges, using difference/ratio plots as a guide, and set a threshold for when the near-maxima values should use the additive change factor (regardless of difference/ratio plot results, which may not be very helpful near the maxima).
 ```{r}
-scaledccfmm=scaledmcfm
+scaledccfmm=scaledmm
 
 #Apply the multiple change factors over the specified ranges
 scaledccfmm=ccfm(scaledccfmm,"Precip","addcf","multcf",60,95)
-
-#Remove extra precipitation events
-scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
-
 
 ```
 
@@ -134,8 +144,8 @@ scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 Calculate Summary Statistics to Compare Different Scaling Methods
 ```{r}
 #Historical Observed
-summary(scaledccfmm$Precip)
-nrow(scaledccfmm[(scaledccfmm$Precip>0),])
+summary(obs$Precip)
+nrow(obs[(obs$Precip>0),])
 
 #Future Observed
 comparison=formatperiods(slc_obs,"ObservedPrecip",c(1980,2009))

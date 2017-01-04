@@ -1,4 +1,4 @@
-## ---- echo=FALSE---------------------------------------------------------
+## ------------------------------------------------------------------------
 #Load Libraries
 library(CCFMR)
 library(lubridate)
@@ -33,20 +33,14 @@ base=calcecdf(base,"Precip")
 future=calcecdf(future,"Precip")
 
 #Calculate the percentiles (ECDF) of the observed values
-obs$percentile=(rank(obs$Precip)/length(obs$Precip))*100
-obs$percentlow=floor(obs$percentile)
+obs=calcecdf(obs,"Precip")
 
-#Visualize Results by plotting precip against the percentiles
-plot(x=base$Precip,y=base$percentile,ylab='Percentile',xlab='Precipitation (mm/day)',main='ECDF',col=2)
-points(x=future$Precip,y=future$percentile,col=4)
-points(x=obs$Precip,y=obs$percentile,col=3)
-
-
+#Calculate the change factors by percentile
 percent=data.frame(percentlow=seq(1,100))
 
 for (i in seq(0,99)){
-  percent$base[i+1]=mean(base[(base$percentlow==i),"Precip"])
-  percent$future[i+1]=mean(future[(future$percentlow==i),"Precip"])
+    percent$base[i+1]=mean(base[(base$percentlow==i),"Precip"])
+    percent$future[i+1]=mean(future[(future$percentlow==i),"Precip"])
 }
 percent$base[is.nan(percent$base)]=0
 percent$future[is.nan(percent$future)]=0
@@ -55,16 +49,15 @@ percent$addcf=percent$future-percent$base
 percent$multcf=percent$future/percent$base
 percent$multcf[is.nan(percent$multcf)]=0
 
+#Visualize Results by plotting precip against the percentiles
+plot(x=base$Precip,y=base$percentile,ylab='Percentile',xlab='Precipitation (mm/day)',main='ECDF',col=2)
+points(x=future$Precip,y=future$percentile,col=4)
+points(x=obs$Precip,y=obs$percentile,col=3)
 
 ## ------------------------------------------------------------------------
-#Create and Format the mcfm (multiple change factor methodology) dataframe
-scaledmcfm=obs
-scaledmcfm=merge(scaledmcfm,percent,by="percentlow")
-
 #Apply multiple change factors (additive and multiplicative only)
-scaledmcfm$addscaled=scaledmcfm$Precip+scaledmcfm$addcf
-scaledmcfm[(scaledmcfm$addscaled<0),"addscaled"]=0
-scaledmcfm$multscaled=scaledmcfm$Precip*scaledmcfm$multcf
+scaledma=scalemultiple(obs,"additive",percent)
+scaledmm=scalemultiple(obs,"multiplicative",percent)
 
 ## ----fig.show='hold'-----------------------------------------------------
 #Calculate ratio and differences for each bin
@@ -82,7 +75,7 @@ names(scaledccfms)=c("DOY","Date","Precip","percentile","percentlow","addcf","mu
 
 
 ## ------------------------------------------------------------------------
-
+#Apply the single change factors over the specified ranges
 scaledccfms=ccfm(scaledccfms,"Precip","addcf","multcf",60,95)
 
 #Remove extra precipitation events
@@ -90,26 +83,22 @@ scaledccfms[(scaledccfms$Precip==0),"scaled"]=0
 
 
 ## ------------------------------------------------------------------------
-scaledccfmm=scaledmcfm
+scaledccfmm=scaledmm
 
 #Apply the multiple change factors over the specified ranges
 scaledccfmm=ccfm(scaledccfmm,"Precip","addcf","multcf",60,95)
 
-#Remove extra precipitation events
-scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
-
-
 
 ## ------------------------------------------------------------------------
 #Historical Observed
-summary(scaledccfmm$Precip)
-nrow(scaledccfmm[(scaledccfmm$Precip>0),])
+summary(obs$Precip)
+nrow(obs[(obs$Precip>0),])
 
 #Future Observed
 comparison=formatperiods(slc_obs,"ObservedPrecip",c(1980,2009))
 summary(comparison$Precip)
 nrow(comparison[(comparison$Precip>0),])
-
+#-----------------------------------------------------------
 #Single Additive Change Factor
 summary(scaledadd$scaled)
 nrow(scaledadd[(scaledadd$scaled>0),])
@@ -121,14 +110,14 @@ nrow(scaledmult[(scaledmult$scaled>0),])
 #Combined Single Change Factors
 summary(scaledccfms$scaled)
 nrow(scaledccfms[(scaledccfms$scaled>0),])
-
+#------------------------------------------------------------
 #Multiple Additive Change Factors
-summary(scaledccfmm$addscaled)
-nrow(scaledccfmm[(scaledccfmm$addscaled>0),])
+summary(scaledma$scaled)
+nrow(scaledma[(scaledma$scaled>0),])
 
 #Multiple Multiplicative Change Factors
-summary(scaledccfmm$multscaled)
-nrow(scaledccfmm[(scaledccfmm$multscaled>0),])
+summary(scaledmm$scaled)
+nrow(scaledmm[(scaledmm$scaled>0),])
 
 #Combined Multiple Change Factors
 (summary(scaledccfmm$scaled))
@@ -137,6 +126,4 @@ nrow(scaledccfmm[(scaledccfmm$scaled>0),])
 
 ## ------------------------------------------------------------------------
 scaledccfmm$FutureDate=scaledccfmm$Date+(round(365.25*40))
-
-
 

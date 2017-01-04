@@ -5,8 +5,7 @@
 #' @param type of change factor to be calculated
 #' @return data.frame of additive or multiplicative change factor for each day of the year
 #' @export
-#'
-#'
+
 
 calccf=function(baselinedata,futuredata,cftype){
   if(cftype=="additive"){

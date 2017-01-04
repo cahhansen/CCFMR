@@ -4,8 +4,6 @@
 #'
 #' @return data.frame Data frame of averaged precipitation values
 #' @export
-#'
-#'
 
 avgdaily=function(data){
   library(lubridate)

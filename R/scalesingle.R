@@ -6,7 +6,6 @@
 #'
 #' @return data.frame Data frame of scaled projections
 #' @export
-#'
 
 scalesingle=function(cf,observed,cftype){
   if(cftype=="additive"){
