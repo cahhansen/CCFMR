@@ -23,11 +23,14 @@ library(lubridate)
 slcbcca=slc_bcca
 
 #Limit data to specified time period for a specified model
-baseperiod=c(1950,1979)
-futureperiod=c(1980,2009)
+baseperiod=c(1955,1984)
+futureperiod=c(1985,2014)
 base=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",baseperiod)
 future=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",futureperiod)
 obs=formatperiods(slc_obs,"ObservedPrecip",baseperiod)
+
+comparison=formatperiods(slc_obs,"ObservedPrecip",futureperiod)
+
 ```
 
 ## Single Change Factor Approach
@@ -148,33 +151,25 @@ scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 Calculate Summary Statistics to Compare Different Scaling Methods
 ```{r}
 #Historical Observed
-summary(obs$Precip)
-nrow(obs[(obs$Precip>0),])
+precipsummary(obs,"Precip")
 
 #Future Observed
-comparison=formatperiods(slc_obs,"ObservedPrecip",c(1980,2009))
-summary(comparison$Precip)
-nrow(comparison[(comparison$Precip>0),])
+precipsummary(comparison,"Precip")
 #-----------------------------------------------------------
 #Single Additive Change Factor
-summary(scaledadd$scaled)
-nrow(scaledadd[(scaledadd$scaled>0),])
+precipsummary(scaledadd,"scaled")
 
 #Single Multiplicative Change Factor
-summary(scaledmult$scaled)
-nrow(scaledmult[(scaledmult$scaled>0),])
+precipsummary(scaledmult,"scaled")
 
 #Combined Single Change Factors
-summary(scaledccfms$scaled)
-nrow(scaledccfms[(scaledccfms$scaled>0),])
+precipsummary(scaledccfms,"scaled")
 #------------------------------------------------------------
 #Multiple Additive Change Factors
-summary(scaledma$addscaled)
-nrow(scaledma[(scaledma$addscaled>0),])
+precipsummary(scaledma,"addscaled")
 
 #Multiple Multiplicative Change Factors
-summary(scaledmm$multscaled)
-nrow(scaledmm[(scaledmm$multscaled>0),])
+precipsummary(scaledmm,"multscaled")
 
 #Combined Multiple Change Factors
 precipsummary(scaledccfmm,"scaled")
