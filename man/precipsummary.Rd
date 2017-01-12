@@ -4,7 +4,7 @@
 \alias{precipsummary}
 \title{PrecipSummary}
 \usage{
-precipsummary(data, precipcol, comparedata, compprecipcol)
+precipsummary(data, precipcol, comparedata, compprecipcol, title)
 }
 \arguments{
 \item{data, }{data.frame}
@@ -12,6 +12,10 @@ precipsummary(data, precipcol, comparedata, compprecipcol)
 \item{precipcol}{string representing the column in data frame with precipitation (observed, modeled, or scaled) values}
 
 \item{comparedata, }{data.frame of the comparison}
+
+\item{compprecipcol}{string representing the column in data frame with precipitation (observed, modeled, or scaled) values}
+
+\item{title, }{string used in plot title (such as the name of the CF approach)}
 }
 \description{
 PrecipSummary

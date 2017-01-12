@@ -1,12 +1,15 @@
 #' PrecipSummary
 #'
 #'
-#' @param comparedata, data.frame of the comparison
+#'
 #' @param data, data.frame
 #' @param precipcol string representing the column in data frame with precipitation (observed, modeled, or scaled) values
+#' @param comparedata, data.frame of the comparison
+#' @param compprecipcol string representing the column in data frame with precipitation (observed, modeled, or scaled) values
+#' @param title, string used in plot title (such as the name of the CF approach)
 #' @export
 
-precipsummary=function(data,precipcol,comparedata,compprecipcol){
+precipsummary=function(data,precipcol,comparedata,compprecipcol,title){
   if(missing(comparedata)){
     precip=data[,precipcol]
     psum=summary(precip)
@@ -52,7 +55,7 @@ precipsummary=function(data,precipcol,comparedata,compprecipcol){
   print(diff.99)
   print(q.max)
   print(pevents)
-  plot(diffs,ylim=c(-75,75))
+  plot(diffs,ylim=c(-75,75),main=title)
 
 
 }

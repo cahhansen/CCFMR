@@ -100,34 +100,34 @@ scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 
 ## ------------------------------------------------------------------------
 #Historical Observed
-precipsummary(obs,"Precip",comparison,"Precip")
+precipsummary(obs,"Precip",comparison,"Precip","Historical")
 
 #Future Observed
-precipsummary(comparison,"Precip",comparison,"Precip")
+precipsummary(comparison,"Precip",comparison,"Precip","Comparison")
 #-----------------------------------------------------------
 #Single Additive Change Factor
-precipsummary(scaledadd,"scaled",comparison,"Precip")
+precipsummary(scaledadd,"scaled",comparison,"Precip","Single Additive")
 
 #Single Multiplicative Change Factor
-precipsummary(scaledmult,"scaled",comparison,"Precip")
+precipsummary(scaledmult,"scaled",comparison,"Precip","Single Multiplicative")
 
 #Combined Single Change Factors
-precipsummary(scaledccfms,"scaled",comparison,"Precip")
+precipsummary(scaledccfms,"scaled",comparison,"Precip","Combined Single")
 #------------------------------------------------------------
 #Multiple Additive Change Factors
-precipsummary(scaledma,"addscaled",comparison,"Precip")
+precipsummary(scaledma,"addscaled",comparison,"Precip","Multiple Additive")
 
 #Multiple Additive Change Factors with modification
-precipsummary(scaledma,"modadd",comparison,"Precip")
+precipsummary(scaledma,"modadd",comparison,"Precip","Multiple Additive Mod")
 
 #Multiple Multiplicative Change Factors
-precipsummary(scaledmm,"multscaled",comparison,"Precip")
+precipsummary(scaledmm,"multscaled",comparison,"Precip","Multiple Multiplicative")
 
 #Combined Multiple Change Factors
-precipsummary(scaledccfmm,"scaled",comparison,"Precip")
+precipsummary(scaledccfmm,"scaled",comparison,"Precip","Combined Multiple")
 
 #Unscaled BCCA
-precipsummary(future,"Precip",comparison,"Precip")
+precipsummary(future,"Precip",comparison,"Precip","Unscaled BCCA")
 
 
 ## ------------------------------------------------------------------------
