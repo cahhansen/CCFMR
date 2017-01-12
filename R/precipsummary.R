@@ -38,7 +38,8 @@ precipsummary=function(data,precipcol,comparedata,compprecipcol){
     q.99=quantile(precip,0.99)
     diff.99=100*(q.99-quantile(compareprecip,0.99))/quantile(compareprecip,0.99)
     q.max=max(precip)
-  }
+     }
+  diffs=c(diff.75,diff.9,diff.95,diff.99)
   print(q.min)
   print(q.mean)
   print(q.75)
@@ -51,5 +52,7 @@ precipsummary=function(data,precipcol,comparedata,compprecipcol){
   print(diff.99)
   print(q.max)
   print(pevents)
+  plot(diffs,ylim=c(-75,75))
+
 
 }
