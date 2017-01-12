@@ -7,7 +7,7 @@
 #' @export
 
 precipsummary=function(data,precipcol,comparedata,compprecipcol){
-  if(missing(comparedata) & missing(compprecipcol)){
+  if(missing(comparedata)){
     precip=data[,precipcol]
     psum=summary(precip)
     pevents=length(precip[precip>0])
@@ -30,15 +30,14 @@ precipsummary=function(data,precipcol,comparedata,compprecipcol){
     q.min=min(precip)
     q.mean=mean(precip)
     q.75=quantile(precip,0.75)
-    diff.75=(q.75-quantile(compareprecip,0.75))/quantile(compareprecip,0.75)
+    diff.75=100*(q.75-quantile(compareprecip,0.75))/quantile(compareprecip,0.75)
     q.9=quantile(precip,0.9)
-    diff.9=(q.9-quantile(compareprecip,0.9))/quantile(compareprecip,0.9)
+    diff.9=100*(q.9-quantile(compareprecip,0.9))/quantile(compareprecip,0.9)
     q.95=quantile(precip,0.95)
-    diff.95=(q.95-quantile(compareprecip,0.95))/quantile(compareprecip,0.95)
+    diff.95=100*(q.95-quantile(compareprecip,0.95))/quantile(compareprecip,0.95)
     q.99=quantile(precip,0.99)
-    diff.99=(q.99-quantile(compareprecip,0.99))/quantile(compareprecip,0.99)
+    diff.99=100*(q.99-quantile(compareprecip,0.99))/quantile(compareprecip,0.99)
     q.max=max(precip)
-
   }
   print(q.min)
   print(q.mean)
