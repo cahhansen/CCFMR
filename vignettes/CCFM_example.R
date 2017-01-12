@@ -12,7 +12,7 @@ futureperiod=c(1985,2014)
 base=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",baseperiod)
 future=formatperiods(slcbcca,"gfdl-esm2g.1.rcp26",futureperiod)
 obs=formatperiods(slc_obs,"ObservedPrecip",baseperiod)
-
+ 
 comparison=formatperiods(slc_obs,"ObservedPrecip",futureperiod)
 
 
@@ -62,6 +62,8 @@ points(x=obs$Precip,y=obs$percentile,col=3)
 ## ------------------------------------------------------------------------
 #Apply multiple change factors (additive and multiplicative only)
 scaledma=scalemultiple(obs,"additive",percentdf=percent)
+scaledma$modadd=scaledma$addscaled
+scaledma[(scaledma$Precip==0),"modadd"]=0
 scaledmm=scalemultiple(obs,"multiplicative",percentdf=percent)
 
 ## ----fig.show='hold'-----------------------------------------------------
@@ -98,28 +100,34 @@ scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 
 ## ------------------------------------------------------------------------
 #Historical Observed
-precipsummary(obs,"Precip")
+precipsummary(obs,"Precip",comparison,"Precip")
 
 #Future Observed
-precipsummary(comparison,"Precip")
+precipsummary(comparison,"Precip",comparison,"Precip")
 #-----------------------------------------------------------
 #Single Additive Change Factor
-precipsummary(scaledadd,"scaled")
+precipsummary(scaledadd,"scaled",comparison,"Precip")
 
 #Single Multiplicative Change Factor
-precipsummary(scaledmult,"scaled")
+precipsummary(scaledmult,"scaled",comparison,"Precip")
 
 #Combined Single Change Factors
-precipsummary(scaledccfms,"scaled")
+precipsummary(scaledccfms,"scaled",comparison,"Precip")
 #------------------------------------------------------------
 #Multiple Additive Change Factors
-precipsummary(scaledma,"addscaled")
+precipsummary(scaledma,"addscaled",comparison,"Precip")
+
+#Multiple Additive Change Factors with modification
+precipsummary(scaledma,"modadd",comparison,"Precip")
 
 #Multiple Multiplicative Change Factors
-precipsummary(scaledmm,"multscaled")
+precipsummary(scaledmm,"multscaled",comparison,"Precip")
 
 #Combined Multiple Change Factors
-precipsummary(scaledccfmm,"scaled")
+precipsummary(scaledccfmm,"scaled",comparison,"Precip")
+
+#Unscaled BCCA
+precipsummary(future,"Precip",comparison,"Precip")
 
 
 ## ------------------------------------------------------------------------

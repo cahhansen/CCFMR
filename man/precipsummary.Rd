@@ -4,12 +4,14 @@
 \alias{precipsummary}
 \title{PrecipSummary}
 \usage{
-precipsummary(data, precipcol)
+precipsummary(data, precipcol, comparedata, compprecipcol)
 }
 \arguments{
 \item{data, }{data.frame}
 
 \item{precipcol}{string representing the column in data frame with precipitation (observed, modeled, or scaled) values}
+
+\item{comparedata, }{data.frame of the comparison}
 }
 \description{
 PrecipSummary
