@@ -43,19 +43,10 @@ precipsummary=function(data,precipcol,comparedata,compprecipcol,title){
     q.max=max(precip)
      }
   diffs=c(diff.75,diff.9,diff.95,diff.99)
-  print(q.min)
-  print(q.mean)
-  print(q.75)
-  print(diff.75)
-  print(q.9)
-  print(diff.9)
-  print(q.95)
-  print(diff.95)
-  print(q.99)
-  print(diff.99)
-  print(q.max)
-  print(pevents)
-  plot(diffs,ylim=c(-75,75),main=title)
+  results=paste(q.min,q.mean,q.75,diff.75,q.9,diff.9,q.95,diff.95,q.99,diff.99,q.max,pevents,sep=",")
+  print(results)
+  plot(y=diffs,x=c(75,90,95,99),ylim=c(-75,75),xlim=c(60,100),main=title,ylab="Percent Difference from Observed",xlab="Percentile")
+  text(y=diffs, x=c(75,90,95,99), labels=diffs)
 
 
 }

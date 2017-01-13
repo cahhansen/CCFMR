@@ -11,14 +11,11 @@ scalesingle=function(cf,observed,cftype){
   if(cftype=="additive"){
     scaled=merge(cf,observed,by="DOY")
     scaled$scaled=scaled$Precip+scaled$cf
-    scaled=scaled[order(scaled$Date),]
-    scaled[(scaled$scaled<0),"scaled"]=0
+
   }else{
     scaled=merge(cf,observed,by="DOY")
     scaled$scaled=scaled$Precip*scaled$cf
-    scaled=scaled[order(scaled$Date),]
-    scaled[(scaled$scaled<0),"scaled"]=0
   }
-
+  scaled=scaled[order(scaled$Date),]
   return(scaled)
 }

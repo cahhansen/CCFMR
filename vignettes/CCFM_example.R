@@ -95,8 +95,6 @@ scaledccfmm=scaledmm
 #Apply the multiple change factors over the specified ranges
 scaledccfmm=ccfm(scaledccfmm,"Precip","addcf","multcf",60,95)
 
-#Remove extra precipitation events
-scaledccfmm[(scaledccfmm$Precip==0),"scaled"]=0
 
 ## ------------------------------------------------------------------------
 #Historical Observed
@@ -117,8 +115,6 @@ precipsummary(scaledccfms,"scaled",comparison,"Precip","Combined Single")
 #Multiple Additive Change Factors
 precipsummary(scaledma,"addscaled",comparison,"Precip","Multiple Additive")
 
-#Multiple Additive Change Factors with modification
-precipsummary(scaledma,"modadd",comparison,"Precip","Multiple Additive Mod")
 
 #Multiple Multiplicative Change Factors
 precipsummary(scaledmm,"multscaled",comparison,"Precip","Multiple Multiplicative")

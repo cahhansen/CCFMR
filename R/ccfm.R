@@ -18,7 +18,8 @@ ccfm=function(data,precipcol,addcfcol,multcfcol,upperboundadd,threshold){
   data$scaled=data[,precipcol]*data[,multcfcol]
 
   #Apply additive over user specified range
-  data[(data$percentile<=upperboundadd | data$percentile>=threshold),"scaled"]=data[(data$percentile<=upperboundadd | data$percentile>=threshold),precipcol]+data[(data$percentile<=upperboundadd | data$percentile>=threshold),addcfcol]
+  data[(data$percentile<=upperboundadd), "scaled"]=data[(data$percentile<=upperboundadd),precipcol]+data[(data$percentile<=upperboundadd),addcfcol]
+  data[(data$percentile>=threshold),"scaled"]= data[(data$percentile>=threshold),precipcol]+data[(data$percentile>=threshold),addcfcol]
 
   #Apply multiplicative when additive produces a negative value
   data[(data$scaled<0),"scaled"]=data[(data$scaled<0),precipcol]*data[(data$scaled<0),multcfcol]
@@ -26,5 +27,7 @@ ccfm=function(data,precipcol,addcfcol,multcfcol,upperboundadd,threshold){
   #Remove extra precipitation events
   data[(data$Precip==0),"scaled"]=0
 
+
+  data=data[order(data$Date),]
   return(data)
 }
