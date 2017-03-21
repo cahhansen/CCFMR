@@ -5,7 +5,7 @@
 #' @return obsdata Data frame with observations for specified city
 #' @export
 
-read.obs=function(observed,city){
+readobs=function(observed,city){
   if(city=="slc"|city=="salt lake city"|city=="SLC"|city=="Salt Lake City"){
     obsdata=observed[(observed$StationName=="SALT LAKE CITY INTERNATIONAL AIRPORT UT US"),]
   }else if(city=="toledo"|city=="tol"|city=="Toledo"){
