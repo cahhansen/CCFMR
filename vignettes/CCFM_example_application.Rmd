@@ -1,5 +1,5 @@
 ---
-title: "CCFM Example"
+title: "CCFM Example Application"
 author: "Carly Hansen"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
