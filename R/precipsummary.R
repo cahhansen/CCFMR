@@ -9,44 +9,33 @@
 #' @param title, string used in plot title (such as the name of the CF approach)
 #' @export
 
-precipsummary=function(data,precipcol,comparedata,compprecipcol,title){
+precipsummary=function(data,precipcol,comparedata,compprecipcol,title=NULL){
+  resultsdf= data.frame(datasetA=NA,datasetB=NA,measure=c("Number of precip events","Min Precip","Mean Precip","75% Precip","90% Precip",
+                                                          "95% Precip","99% Precip","Max Precip"))
+
   if(missing(comparedata)){
     precip=data[,precipcol]
-    psum=summary(precip)
-    pevents=length(precip[precip>0])
-    q.min=min(precip)
-    q.mean=mean(precip)
-    q.75=quantile(precip,0.75)
-    q.9=quantile(precip,0.9)
-    q.95=quantile(precip,0.95)
-    q.99=quantile(precip,0.99)
-    q.max=max(precip)
-    diff.75="NA"
-    diff.9="NA"
-    diff.95="NA"
-    diff.99="NA"
+    resultsdf$datasetA=round(c(length(precip[precip>0]),min(precip),mean(precip),quantile(precip,0.75),quantile(precip,0.9),quantile(precip,0.95),
+    quantile(precip,0.99),max(precip)),digits=2)
+    print(resultsdf[,c(1,3)])
+
      }else{
     compareprecip=comparedata[,compprecipcol]
     precip=data[,precipcol]
-    psum=summary(precip)
-    pevents=length(precip[precip>0])
-    q.min=min(precip)
-    q.mean=mean(precip)
-    q.75=quantile(precip,0.75)
-    diff.75=100*(q.75-quantile(compareprecip,0.75))/quantile(compareprecip,0.75)
-    q.9=quantile(precip,0.9)
-    diff.9=100*(q.9-quantile(compareprecip,0.9))/quantile(compareprecip,0.9)
-    q.95=quantile(precip,0.95)
-    diff.95=100*(q.95-quantile(compareprecip,0.95))/quantile(compareprecip,0.95)
-    q.99=quantile(precip,0.99)
-    diff.99=100*(q.99-quantile(compareprecip,0.99))/quantile(compareprecip,0.99)
-    q.max=max(precip)
+    resultsdf$datasetA=round(c(length(precip[precip>0]),min(precip),mean(precip),quantile(precip,0.75),quantile(precip,0.9),quantile(precip,0.95),
+                         quantile(precip,0.99),max(precip)),digits=2)
+    resultsdf$datasetB=round(c(length(compareprecip[compareprecip>0]),min(compareprecip),mean(compareprecip),quantile(compareprecip,0.75),quantile(compareprecip,0.9),quantile(compareprecip,0.95),
+                         quantile(compareprecip,0.99),max(compareprecip)),digits=2)
+
+    resultsdf$Diffs=resultsdf$datasetA-resultsdf$datasetB
+    print(resultsdf)
+    diffs=resultsdf$Diffs[4:7]
+
+    plot(y=diffs,x=c(75,90,95,99),ylim=c(-75,75),xlim=c(60,100),main=title,ylab="Percent Difference from Observed",xlab="Percentile")
+    text(y=diffs+5, x=c(75,90,95,99), labels=round(diffs,digits=2))
+
      }
-  diffs=c(diff.75,diff.9,diff.95,diff.99)
-  results=paste(q.min,q.mean,q.75,diff.75,q.9,diff.9,q.95,diff.95,q.99,diff.99,q.max,pevents,sep=",")
-  print(results)
-  plot(y=diffs,x=c(75,90,95,99),ylim=c(-75,75),xlim=c(60,100),main=title,ylab="Percent Difference from Observed",xlab="Percentile")
-  text(y=diffs, x=c(75,90,95,99), labels=diffs)
+
 
 
 }
