@@ -1,0 +1,135 @@
+---
+title: "CCFM Example"
+author: "Carly Hansen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CCFM_Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+## Setup
+
+Load necessary libraries, and read in data and format by subsetting a specificed model into future and baseline periods. (Note that periods for the baseline and the observed dataset should be the same).
+
+```{r}
+#Load Libraries
+library(CCFMR)
+library(lubridate)
+
+#Read in data
+slcbcca=slc_bcca #Modeled data with time series of Date and model columns
+slc_obs=slc_obs #Observed data
+
+#Limit data to specified time period for a specified model
+baseperiod=c(1955,1984) # define this based on available observed data
+futureperiod=c(2055,2084) # define this based on your time period of interest and available modeled data
+base=formatperiods(slcbcca,"ccsm4.1.rcp45",baseperiod)
+future=formatperiods(slcbcca,"ccsm4.1.rcp45",futureperiod)
+
+obs=formatperiods(slc_obs,"ObservedPrecip",baseperiod) # Use this as the base precipitation that will be scaled to a future period
+
+```
+
+Calculate the additive and multiplicative change factors using the average daily values.
+```{r}
+#Find average precipitation volume for each day of the year
+futureavg=avgdaily(future)
+baseavg=avgdaily(base)
+#Calculate additive and multiplicative change factors
+add=calccf(baseavg,futureavg,cftype="additive") #futureavg-baseavg
+mult=calccf(baseavg,futureavg,cftype="multiplicative") #futureavg/baseavg
+```
+
+Calculate percentiles for the base modeled, future modeled, and base observed periods.
+```{r}
+#Calculate the percentiles (ECDF) of modeled values
+base=calcecdf(base,"Precip")
+future=calcecdf(future,"Precip")
+
+#Calculate the percentiles (ECDF) of the observed values
+obs=calcecdf(obs,"Precip")
+
+#Visualize Results by plotting precip for the various records against the percentiles
+plot(x=base$Precip,y=base$percentile,ylab='Percentile',xlab='Precipitation (mm/day)',main='ECDF',col=2)
+points(x=future$Precip,y=future$percentile,col=4)
+points(x=obs$Precip,y=obs$percentile,col=3)
+legend(20,60,legend=c("Base Modeled","Future Modeled","Base Observed"),col=c(2,4,3),pch=c(1,1,1))
+
+```
+
+# Traditional Change Factor Methodology
+Apply the change factors to the historical observations from the same time period as the baseline period.
+```{r}
+#Calculate the day of the year for observed data
+obs$DOY=yday(obs$Date)
+
+#Apply corresponding cf to observed dataset 
+scaledadd=scalesingle(add,obs,cftype="additive")
+scaledmult=scalesingle(mult,obs,cftype="multiplicative")
+```
+
+
+# Combined Change Factor Methodology
+Create Difference and Ratio Plots:
+Following the suggestion of Anandhi, et al., use ratios and difference plots to determine which type of change factor might be the most appropriate (if there is a curve, large slope, or large variation over a range in one CF type, use the other type. If there is no difference, use default of the multiplicative).
+
+```{r,fig.show='hold'}
+#Create a data frame to store the percentiles
+percent=data.frame(percentlow=seq(1,100)) 
+
+for (i in seq(0,99)){ # add values for each percentile (from 1-100) for both the base and future records
+    percent$base[i+1]=mean(base[(base$percentlow==i),"Precip"])
+    percent$future[i+1]=mean(future[(future$percentlow==i),"Precip"])
+}
+percent$base[is.nan(percent$base)]=0
+percent$future[is.nan(percent$future)]=0
+
+#Calculate ratio and differences for each bin
+diff=percent$future-percent$base
+ratio=percent$future/percent$base
+
+plot(x=diff,y=seq(1,100),xlab='Difference of Future-Baseline',ylab='Percentile')
+plot(x=ratio,y=seq(1,100),xlab='Ratio of Future/Baseline',ylab='Percentile')
+```
+
+
+Apply the change factor type for different ranges, using difference/ratio plots as a guide, and set a threshold for when the near-maxima values should use the additive change factor (regardless of difference/ratio plot results, which may not be very helpful near the maxima).
+```{r}
+
+#Format a dataframe for the combined change factor method (CCFM)
+scaledccfm=merge(obs,add,by="DOY")
+scaledccfm=merge(scaledccfm,mult,by="DOY")
+names(scaledccfm)=c("DOY","Date","Precip","percentile","percentlow","addcf","multcf")
+
+#Apply the single change factors over the specified ranges
+# Example: scaledccfms=ccfm(scaledccfms,"Precip","addcf","multcf",70,95) # This would apply the multiplicative cf as default, then from 0-60 percentiles, additive would be applied, from 70-95, it would be left as multiplicative, and then above 95th percentile, it would be additive again. addcf and multcf are the columns that show the change factors at the respective DOY.
+scaledccfm=ccfm(scaledccfm,"Precip","addcf","multcf",70,95)
+
+```
+
+# Summary of scaled and unscaled precip produced by different methods
+
+Calculate Summary Statistics to Compare Different Scaling Methods to each other and to historical precipitation
+```{r}
+#Historical Observed
+precipsummary(data=obs,precipcol="Precip")
+
+#Scaled results produced with Combined Multiple Change Factors
+precipsummary(scaledccfm,"scaled")
+
+#Unscaled BCCA
+precipsummary(future,"Precip")
+#-----------------------------------------------------------
+#Compare the Historical precip vs the  non-secondary corrected BCCA projections
+precipsummary(obs, "Precip",future,"Precip","Historical Precip vs. Non-secondary corrected BCCA")
+
+#Compare the non-secondary corrected BCCA projections vs the CCFM scaled results
+precipsummary(scaledccfm,"scaled",future,"Precip","CCFM vs. Non-secondary corrected BCCA")
+
+#Compare the Historical precip vs the CCFM scaled results
+precipsummary(scaledccfm,"scaled",obs,"Precip","CCFM vs. Historical Precip")
+
+
+
+```
